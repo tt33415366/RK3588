@@ -1,0 +1,81 @@
+menuconfig BR2_PACKAGE_ROCKCHIP
+	bool "Rockchip Platform"
+
+if BR2_PACKAGE_ROCKCHIP
+
+config BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+	bool
+	help
+	  Has Rockchip ISP1
+
+config BR2_PACKAGE_ROCKCHIP_HAS_ISP2
+	bool
+	help
+	  Has Rockchip ISP2
+
+config BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	bool
+	help
+	  Has Rockchip ISP3
+
+choice
+	default BR2_PACKAGE_RK3588
+	prompt "Rockchip SoC"
+
+config BR2_PACKAGE_RK3399
+	bool "rk3399 chip"
+	select BR2_ROCKCHIP_HAS_ISP1
+	help
+	  Use Rockchip's rk3399 SoC
+
+config BR2_PACKAGE_RK356X
+	bool "rk356x chip"
+	select BR2_ROCKCHIP_HAS_ISP2
+	help
+	  Use Rockchip's rk356x SoC
+
+config BR2_PACKAGE_RK3588
+	bool "rk3588"
+	select BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+	help
+	  Use Rockchip's rk3588 SoC
+
+endchoice
+
+# Camera Engine packages
+config BR2_PACKAGE_CAMERA_ENGINE
+    bool "Rockchip Camera Engine For ISP"
+    depends on BR2_PACKAGE_ROCKCHIP_HAS_ISP1 || BR2_PACKAGE_ROCKCHIP_HAS_ISP2 || BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+    select BR2_PACKAGE_CAMERA_ENGINE_RKISP if BR2_PACKAGE_ROCKCHIP_HAS_ISP1
+    select BR2_PACKAGE_CAMERA_ENGINE_RKAIQ if BR2_PACKAGE_ROCKCHIP_HAS_ISP2
+    select BR2_PACKAGE_CAMERA_ENGINE_RKAIQ if BR2_PACKAGE_ROCKCHIP_HAS_ISP3
+    help
+        Depend on Chip Type, there are different camera_engine packages.
+        Enable this config to choose camera_engine package by chip automatically.
+
+menu "Rockchip BSP packages"
+	source "package/rockchip/camera-engine-rkaiq/Config.in"
+	source "package/rockchip/camera-engine-rkisp/Config.in"
+	source "package/rockchip/gstreamer1-rockchip/Config.in"
+	source "package/rockchip/libv4l-rkmpp/Config.in"
+	source "package/rockchip/recovery/Config.in"
+	source "package/rockchip/rknpu2/Config.in"
+	source "package/rockchip/rkscript/Config.in"
+	source "package/rockchip/rktoolkit/Config.in"
+	source "package/rockchip/rkupdate/Config.in"
+	source "package/rockchip/rkwifibt/Config.in"
+	source "package/rockchip/rkwifibt-app/Config.in"
+	source "package/rockchip/rockchip-alsa-config/Config.in"
+	source "package/rockchip/rockchip-rga/Config.in"
+	source "package/rockchip/rockchip-mali/Config.in"
+	source "package/rockchip/rockchip-mali-nvr/Config.in"
+	source "package/rockchip/rockchip-mpp/Config.in"
+	source "package/rockchip/rockchip-test/Config.in"
+	source "package/rockchip/tee-user-app/Config.in"
+endmenu
+
+menu "Rockchip Qt demos"
+	source "package/rockchip/apps/Config.in"
+endmenu
+
+endif
